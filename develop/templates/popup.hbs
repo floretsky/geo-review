@@ -1,0 +1,36 @@
+<div class="popup">
+    <div class="popup__header">
+        <i class="fas fa-map-marker-alt popup__geo"></i> $[properties.address]
+        <i class="fas fa-times popup__close"></i>
+    </div>
+    <div class="popup__reviews">
+        <div class="popup__reviews-container">
+            <ul class="popup__reviews-list">
+                {% for item in properties.reviews %}
+                <li class="popup__reviews-item">
+                    <div class="popup__review-header">
+                        <div class="popup__review-name">$[item.name]</div>
+                    </div>
+                    <div class="popup__review-text">
+                        $[item.text]
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="popup__form">
+        <form action="" class="popup__form-container">
+            <div class="popup__form-row">
+                <input type="text" placeholder="Ваше имя" id="review-name" class="popup__input" name="name">
+            </div>
+            <div class="popup__form-row">
+                <textarea name="review" placeholder="Поделитесь впечатлениями" class="popup__input popup__input_text"
+                    id="review"></textarea>
+            </div>
+            <div class="popup__form-row">
+                <button class="add-review">Добавить</button>
+            </div>
+        </form>
+    </div>
+</div>
