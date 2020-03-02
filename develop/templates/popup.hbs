@@ -1,18 +1,21 @@
 <div class="popup">
     <div class="popup__header">
-        <i class="fas fa-map-marker-alt popup__geo"></i> $[properties.address]
+        <i class="fas fa-map-marker-alt popup__geo"></i> $[address]
         <i class="fas fa-times popup__close"></i>
     </div>
     <div class="popup__reviews">
         <div class="popup__reviews-container">
             <ul class="popup__reviews-list">
-                {% for item in properties.reviews %}
+                {% for item in reviews %}
                 <li class="popup__reviews-item">
                     <div class="popup__review-header">
                         <div class="popup__review-name">$[item.name]</div>
                     </div>
                     <div class="popup__review-text">
-                        $[item.text]
+                        $[item.review]
+                    </div>
+                    <div class="popup__review-date">
+                        $[item.date]
                     </div>
                 </li>
                 {% endfor %}

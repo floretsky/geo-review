@@ -14,6 +14,7 @@
   ],
   "rules": {
     "no-cond-assign": "off",
+    "no-undef": "off",
     "space-before-blocks": "error",
     "spaced-comment": "error",
     "curly": "error",

@@ -1,48 +1,25 @@
-import { geoCodeByCoords } from './geocode.js';
+import popupTemplate from '../templates/popup.hbs';
+import { myStorage } from '../index.js';
 
-const popupTpl = require('../templates/popup.hbs');
+export function showForm(point) {
+    const popupBlock = document.querySelector('.popup');
 
+    /*let reviewsArr = [];
 
-const init = () => {
-    const balloonLayout = ymaps.templateLayoutFactory.createClass(popupTpl(), {
-        build: function () {
-            balloonLayout.superclass.build.call(this);
-            const closeButton = document.querySelector('.popup__close');
-
-            closeButton.addEventListener('click', () => {
-                this.closeBalloon();
-            })
-        },
-        clear: function () {
-            balloonLayout.superclass.clear.call(this);
-        },
-        closeBalloon: function () {
-            this.events.fire('userclose');
+    for (const item of myStorage.items) {                       
+        if (item.address == point.address) {
+            reviewsArr.push(...item.reviews);
         }
-    })
+    }
+
+    point.reviews = reviewsArr;
+
+    reviewBlock.style.left = point.position[0] + 'px';
+    reviewBlock.style.top = point.position[1] + 'px';             
+    reviewBlock.classList.remove('visually-hidden');*/
+
+    const htmlReview = popupTemplate(point);
+    reviewBlock.innerHTML = htmlReview;
     
-    const myMap = new ymaps.Map('map', {
-        center: [59.93, 30.31],
-        zoom: 13,
-        controls: ['zoomControl', 'fullscreenControl']
-    }, { balloonLayout });
-
-    myMap.events.add('click', e => {
-        const coords = e.get('coordPosition');
-        var names = [];
-        ymaps.geocode(coords).then(function (res) {
-
-            res.geoObjects.each(function (obj) {
-                names.push(obj.properties.get('name'));
-            });
-        });
-
-        myMap.balloon.open(coords, {
-            properties: {
-                address: names[0],
-            }
-        });
-    });
+    return point;
 }
-
-export default init;
