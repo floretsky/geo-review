@@ -1,11 +1,10 @@
 const popupTemplate = require('../templates/popup.hbs');
-const clusterLayout = require('../templates/cluster.hbs');
 
+import { basicStorage } from '..';
 import { createReview } from './review';
 import { getPlacemarks } from './placemark';
-import { basicStorage } from '..';
 
-export let clusterer = '';
+export let clusterer;
 export let myMap;
 
 export function loadMap() {
@@ -20,23 +19,25 @@ export function loadMap() {
                 const popupBlock = document.querySelector('.popup');
                 const closeButton = popupBlock.querySelector('.popup__close');
                 const addReview = popupBlock.querySelector('.add-review');
-                
+
                 closeButton.addEventListener('click', () => {
                     this.closeBalloon();
                 })
 
                 addReview.addEventListener('click', (e) => {
                     e.preventDefault();
-
-                    let data = myMap.balloon.getData();
-
+                           
+                    let data = myMap.balloon.getData().properties;
+                    
                     let point = {
-                        address: data.address,
-                        coords:  data.coords,
-                        position: data.position
+                        properties: {
+                            address: data.address,
+                            coords: data.coords
+                        }
                     }; 
 
                     createReview(point);
+                    this.closeBalloon();
                 })
 
             },
@@ -48,15 +49,21 @@ export function loadMap() {
             }
         })
 
-        const clusterContentLayout = ymaps.templateLayoutFactory.createClass(clusterLayout());
-
         myMap = new ymaps.Map('map', {
             center: [59.93, 30.31],
             zoom: 13,
             controls: ['zoomControl', 'fullscreenControl']
         }, { balloonLayout });
         
-        var customItemContentLayout = ymaps.templateLayoutFactory.createClass(clusterContentLayout);
+        var customItemContentLayout = ymaps.templateLayoutFactory.createClass(
+            // Флаг "raw" означает, что данные вставляют "как есть" без экранирования html.
+            `<div class=ballon__content>
+            <h2 class=ballon__header>{{ properties.balloonContentHeader|raw }}</h2>
+            <a href="#" class=ballon__link data-coord="{{ properties.balloonContentCoords|raw }}">{{ properties.balloonContentLink|raw }}</a>
+            <div class=ballon__body>{{ properties.balloonContentBody|raw }}</div>
+            <div class=ballon__footer>{{ properties.balloonContentFooter|raw }}</div>
+            </div>`
+        );
 
         clusterer = new ymaps.Clusterer({
             preset: 'islands#invertedVioletClusterIcons', // стили кластера
@@ -77,18 +84,18 @@ export function loadMap() {
         }
 
         myMap.events.add('click', e => {
-            const coords = e.get('coords'),
-                position = e.get('position');
+            const coords = e.get('coords');
 
             ymaps.geocode(coords).then(function (res) {
                 var newContent = res.geoObjects.get(0) ?
-                        res.geoObjects.get(0).properties.get('name') :
-                        'Не удалось определить адрес.';
-
+                    res.geoObjects.get(0).properties.get('name') :
+                    'Не удалось определить адрес.';
+                    
                 myMap.balloon.open(coords, {
-                    address: newContent,
-                    coords: coords,
-                    position: position
+                    properties: {
+                        address: newContent,
+                        coords: coords
+                    }
                 });
             });
         });

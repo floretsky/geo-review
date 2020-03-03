@@ -30,7 +30,7 @@ ul {
 }
 
 .popup__header {
-    background-color: #ff8663;
+    background-color: #b51eff;
     padding: 15px;
     color: #ffffff;
     font-size: 12px;
@@ -54,7 +54,6 @@ ul {
 
 .popup__reviews {
     padding: 15px 15px 0 15px;
-    /* border-bottom: 1px solid #f0f0f0; */
     margin-bottom: 15px;
 }
 
@@ -182,9 +181,14 @@ ul {
     font-size: 14px;
 }
 
-.search_by_address {
-    font-size: 14px;
-    color: blue;
-    text-decoration: underline;
-    cursor: pointer;
+.ballon__link {
+    margin-bottom: 10px;
+}
+
+.ballon__body{
+    margin-bottom: 10px;
+}
+
+.balloon__footer{
+    margin-bottom: 10px;
 }

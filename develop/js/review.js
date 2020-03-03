@@ -1,28 +1,28 @@
-const popupTemplate = require('../templates/popup.hbs');
-
-import { myMap } from './map.js';
 import { clusterer } from './map.js';
 import { placemarksCoords } from '../index.js';
 import { basicStorage } from '../index.js';
+import { addPlacemark } from './placemark.js';
 
 export function createReview(point) {
     const name = document.querySelector('#review-name');
+    const place = document.querySelector('#review-place');
     const textReview = document.querySelector('#review');
-    const popupBlock = document.querySelector('.popup');
 
     let date = new Date();
     let dateStr = date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear();
     let newReview = {
         name: name.value,
+        place: place.value,
         date: dateStr,
         review: textReview.value
     }
 
-    if (name.value && review.value) {                     
+    if (name.value && review.value && place.value) {                     
         let flag = false;
+        
         if (basicStorage.items.length) {
-            for (const item of basicStorage.items) {
-                if (item.address == point.address) {
+            for (let item of basicStorage.items) {
+                if (item.properties.address == point.properties.address) {
                     item.reviews.push(newReview);
                     point.reviews = item.reviews;
                     flag = true;
@@ -40,18 +40,13 @@ export function createReview(point) {
         alert('Заполните все поля, чтобы добавить отзыв')
     }
 
-    myMap.balloon.setData({
-        address: point.address,
-        reviews: point.reviews
-    });
-    
-    placemarksCoords.items.push(point.coords);
+    placemarksCoords.items.push(point.properties.coords);
 
-    //let placemark = addPlacemark(point, newReview);
+    let placemark = addPlacemark(point, newReview);
 
-    /* if (placemark) {
+    if (placemark) {
         clusterer.add(placemark); 
-    } */
+    } 
 
     localStorage.data = JSON.stringify({
         items: basicStorage.items

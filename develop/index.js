@@ -1,7 +1,7 @@
 require('@fortawesome/fontawesome-free/css/all.min.css');
 import './styles/style.css';
 import { loadMap } from './js/map';
-import { getPlacemarks } from './js/placemark';
+import { navigateFromCarousel } from './js/navigate';
 
 export let basicStorage = {
     items: []
@@ -15,5 +15,7 @@ export let placemarksCoords = {
     items: []
 };
 
-loadMap();
-getPlacemarks();
+ymaps.ready(function () {
+    loadMap();
+    navigateFromCarousel();
+})

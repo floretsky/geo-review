@@ -6,7 +6,7 @@ import { myMap } from './map.js';
 export function getPlacemarks() {
     for (const item of basicStorage.items) {
         for (const review of item.reviews) {
-            placemarksCoords.items.push(item.coords);
+            placemarksCoords.items.push(item.properties.coords);
             
             let placemark = addPlacemark(item, review);
 
@@ -21,24 +21,27 @@ export function addPlacemark(point, newReview) {
     if (placemarksCoords.items.length) {
         let placemark = new ymaps.Placemark(
             placemarksCoords.items[placemarksCoords.items.length - 1], {
-                openBalloonOnClick: false,
                 balloonContentHeader: newReview.place,
-                balloonContentLink: point.address,
-                balloonContentBody: newReview.textReview,
+                balloonContentLink: point.properties.address,
+                balloonContentBody: newReview.review,
                 balloonContentFooter: newReview.date,
-                balloonContentCoords: point.coords,
+                balloonContentCoords: point.properties.coords
             }, 
-            { 
-                preset: 'islands#darkOrangeIcon'
+            {
+                openBalloonOnClick: false,
+                preset: 'islands#violetIcon'
             }
         );
 
         placemark.events.add('click', function () { 
-            myMap.balloon.setData({
-                address: point.address,
+            myMap.balloon.open(point.properties.coords, {
+                properties: {
+                    address: point.properties.address,
+                    coords: point.properties.coords
+                },
                 reviews: point.reviews
-            });
-        })
+            }); 
+        }) 
 
         return placemark;
     }

@@ -1,6 +1,6 @@
 <div class="popup">
     <div class="popup__header">
-        <i class="fas fa-map-marker-alt popup__geo"></i> $[address]
+        <i class="fas fa-map-marker-alt popup__geo"></i> $[properties.address]
         <i class="fas fa-times popup__close"></i>
     </div>
     <div class="popup__reviews">
@@ -9,12 +9,13 @@
                 {% for item in reviews %}
                 <li class="popup__reviews-item">
                     <div class="popup__review-header">
-                        <div class="popup__review-name">$[item.name]</div>
+                        <div class="popup__review-name">$[item.place]</div>
                     </div>
                     <div class="popup__review-text">
+                        <b>$[item.name]:</b>
                         $[item.review]
                     </div>
-                    <div class="popup__review-date">
+                    <div class="popup__review-text">
                         $[item.date]
                     </div>
                 </li>
@@ -24,6 +25,9 @@
     </div>
     <div class="popup__form">
         <form action="" class="popup__form-container">
+            <div class="popup__form-row">
+                <input type="text" placeholder="Место" id="review-place" class="popup__input" name="place">
+            </div>
             <div class="popup__form-row">
                 <input type="text" placeholder="Ваше имя" id="review-name" class="popup__input" name="name">
             </div>
