@@ -278,7 +278,7 @@ function navigateFromCarousel() {
       myReverseGeocoder.then(function (res) {
         var nearest = res.geoObjects.get(0);
         var reviewsArr = [];
-        var address = "".concat(nearest.properties.get('description'), ", ").concat(nearest.properties.get('name'));
+        var address = nearest.properties.get('name');
         var _iteratorNormalCompletion = true;
         var _didIteratorError = false;
         var _iteratorError = undefined;
@@ -2273,4 +2273,4 @@ module.exports = g;
 /***/ })
 
 /******/ });
-//# sourceMappingURL=index.35a0912dd327221184f5.js.map
+//# sourceMappingURL=index.93828d3f49c544d7d6d0.js.map
