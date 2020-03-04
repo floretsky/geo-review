@@ -1,5 +1,5 @@
-import { myMap } from './map.js';
 import { basicStorage } from '..';
+import { myMap } from './map.js';
 
 export function navigateFromCarousel() {
     document.addEventListener('click', function(e) {
@@ -15,7 +15,7 @@ export function navigateFromCarousel() {
                 function (res) {
                     let nearest = res.geoObjects.get(0);
                     const reviewsArr = [];
-                    const address = nearest.properties.get('name');     
+                    const address = `${nearest.properties.get('description')}, ${nearest.properties.get('name')}`;     
                     
                     for (const item of basicStorage.items) {                       
                         if (item.properties.address === address) {

@@ -1,6 +1,7 @@
+import { basicStorage } from '..';
+import { placemarksCoords } from '..';
+import { myMap } from './map.js';
 import { clusterer } from './map.js';
-import { placemarksCoords } from '../index.js';
-import { basicStorage } from '../index.js';
 import { addPlacemark } from './placemark.js';
 
 export function createReview(point) {
@@ -47,6 +48,15 @@ export function createReview(point) {
     if (placemark) {
         clusterer.add(placemark); 
     } 
+
+    if (myMap.balloon.isOpen()) {
+        myMap.balloon.open(point.properties.coords, {
+            properties: {
+                address: point.properties.address,
+                coords: point.properties.coords,
+            }, reviews: point.reviews
+        });
+    }
 
     localStorage.data = JSON.stringify({
         items: basicStorage.items

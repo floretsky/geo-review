@@ -181,14 +181,20 @@ ul {
     font-size: 14px;
 }
 
-.ballon__link {
-    margin-bottom: 10px;
+.ballon__content {
+    font-family: "Fira Sans", sans-serif;
 }
 
-.ballon__body{
-    margin-bottom: 10px;
+.ballon__body > .ballon__link {
+    font-size: 15px;
+    color: #b51eff;
+    line-height: 22px;
 }
 
-.balloon__footer{
-    margin-bottom: 10px;
+.ballon__review, 
+.ballon__footer{
+    font-size: 15px;
+    color: #4f4f4f;
+    line-height: 22px;
 }
+

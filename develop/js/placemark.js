@@ -1,7 +1,7 @@
-import { basicStorage } from '../index.js';
-import { placemarksCoords } from '../index.js';
-import { clusterer } from './map.js';
+import { basicStorage } from '..';
+import { placemarksCoords } from '..';
 import { myMap } from './map.js';
+import { clusterer } from './map.js';
 
 export function getPlacemarks() {
     for (const item of basicStorage.items) {
@@ -23,7 +23,8 @@ export function addPlacemark(point, newReview) {
             placemarksCoords.items[placemarksCoords.items.length - 1], {
                 balloonContentHeader: newReview.place,
                 balloonContentLink: point.properties.address,
-                balloonContentBody: newReview.review,
+                balloonContentReviewName: newReview.name,
+                balloonContentReview: newReview.review,
                 balloonContentFooter: newReview.date,
                 balloonContentCoords: point.properties.coords
             }, 
