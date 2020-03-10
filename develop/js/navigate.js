@@ -12,13 +12,12 @@ export function navigateFromCarousel() {
             let myReverseGeocoder = ymaps.geocode(coords);
 
             myReverseGeocoder.then(
-                function (res) {
-                    let nearest = res.geoObjects.get(0);
+                function () {
                     const reviewsArr = [];
-                    const address = `${nearest.properties.get('description')}, ${nearest.properties.get('name')}`;
-                    
-                    for (const item of basicStorage) {                       
-                        if (item.properties.address === address) {
+                    const address = elem.dataset.address;      
+
+                    for (const item of basicStorage) {
+                        if (address === item.properties.address) {
                             reviewsArr.push(...item.reviews);
                         }
                     }

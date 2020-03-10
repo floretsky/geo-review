@@ -72,7 +72,7 @@ export function loadMap() {
         `<div class=ballon__content>
             <h2 class=ballon__header>{{ properties.balloonContentHeader|raw }}</h2>
             <div class=ballon__body>
-            <a href="#" class=ballon__link data-coord="{{ properties.balloonContentCoords|raw }}">{{ properties.balloonContentLink|raw }}</a>
+            <a href="#" class=ballon__link data-coord="{{ properties.balloonContentCoords|raw }}" data-address="{{ properties.balloonContentLink|raw }}">{{ properties.balloonContentLink|raw }}</a>
             <div class=ballon__review>
                 <b>{{ properties.balloonContentReviewName|raw }}:</b> {{ properties.balloonContentReview|raw }}
             </div>
