@@ -4,9 +4,9 @@ import { myMap } from './map.js';
 import { clusterer } from './map.js';
 
 export function getPlacemarks() {
-    for (const item of basicStorage.items) {
+    for (const item of basicStorage) {
         for (const review of item.reviews) {
-            placemarksCoords.items.push(item.properties.coords);
+            placemarksCoords.push(item.properties.coords);
             
             let placemark = addPlacemark(item, review);
 
@@ -18,9 +18,9 @@ export function getPlacemarks() {
 }
 
 export function addPlacemark(point, newReview) {
-    if (placemarksCoords.items.length) {
+    if (placemarksCoords.length) {
         let placemark = new ymaps.Placemark(
-            placemarksCoords.items[placemarksCoords.items.length - 1], {
+            placemarksCoords[placemarksCoords.length - 1], {
                 balloonContentHeader: newReview.place,
                 balloonContentLink: point.properties.address,
                 balloonContentReviewName: newReview.name,

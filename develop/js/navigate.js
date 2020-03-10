@@ -15,9 +15,9 @@ export function navigateFromCarousel() {
                 function (res) {
                     let nearest = res.geoObjects.get(0);
                     const reviewsArr = [];
-                    const address = nearest.properties.get('name');
+                    const address = `${nearest.properties.get('description')}, ${nearest.properties.get('name')}`;
                     
-                    for (const item of basicStorage.items) {                       
+                    for (const item of basicStorage) {                       
                         if (item.properties.address === address) {
                             reviewsArr.push(...item.reviews);
                         }

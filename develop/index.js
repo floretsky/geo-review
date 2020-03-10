@@ -3,17 +3,13 @@ import './styles/style.css';
 import { loadMap } from './js/map';
 import { navigateFromCarousel } from './js/navigate';
 
-export let basicStorage = {
-    items: []
-};
+export let basicStorage = [];
 
 if (localStorage.data) {
     basicStorage = JSON.parse(localStorage.data);
 }
 
-export let placemarksCoords = {
-    items: []
-};
+export let placemarksCoords = [];
 
 ymaps.ready(function () {
     loadMap();

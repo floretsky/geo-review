@@ -21,8 +21,8 @@ export function createReview(point) {
     if (name.value && review.value && place.value) {                     
         let flag = false;
         
-        if (basicStorage.items.length) {
-            for (let item of basicStorage.items) {
+        if (basicStorage.length) {
+            for (let item of basicStorage) {
                 if (item.properties.address == point.properties.address) {
                     item.reviews.push(newReview);
                     point.reviews = item.reviews;
@@ -35,13 +35,13 @@ export function createReview(point) {
         if (flag == false) {
             point.reviews = [];
             point.reviews.push(newReview);
-            basicStorage.items.push(point);
+            basicStorage.push(point);
         }                            
     } else {
         alert('Заполните все поля, чтобы добавить отзыв')
     }
 
-    placemarksCoords.items.push(point.properties.coords);
+    placemarksCoords.push(point.properties.coords);
 
     let placemark = addPlacemark(point, newReview);
 
@@ -58,7 +58,5 @@ export function createReview(point) {
         });
     }
 
-    localStorage.data = JSON.stringify({
-        items: basicStorage.items
-    });
+    localStorage.data = JSON.stringify(basicStorage);
 }

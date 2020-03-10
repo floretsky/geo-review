@@ -7,44 +7,30 @@ export let clusterer;
 export let myMap;
 
 export function loadMap() {
+    let addReview, closeButton;
     const balloonLayout = ymaps.templateLayoutFactory.createClass(popupTemplate(), {
         build: function () {
             balloonLayout.superclass.build.call(this);
-            const popupBlock = document.querySelector('.popup'),
-                closeButton = popupBlock.querySelector('.popup__close'),
-                addReview = popupBlock.querySelector('.add-review');
+            const popupBlock = document.querySelector('.popup');
+
+            addReview = popupBlock.querySelector('.add-review');
+            closeButton = popupBlock.querySelector('.popup__close');
 
             this._element = this.getParentElement().querySelector('.popup');
             this.applyElementOffset();
             
+            addReview.addEventListener('click', onAddReviewClick);
             closeButton.addEventListener('click', () => {
                 this.closeBalloon();
-            })
-
-            addReview.addEventListener('click', (e) => {
-                e.preventDefault();
-                        
-                let data = myMap.balloon.getData().properties;
-                let address, coords;
-
-                // Проверка на то, существует ли уже объект от яндекса
-
-                data.address ? address = data.address : address = data._data.address;
-                data.coords ? coords = data.coords : coords = data._data.point.reverse();
-
-                let point = {
-                    properties: {
-                        address: address,
-                        coords: coords
-                    }
-                }; 
-
-                createReview(point);
-            })
-
+            });
         },
         clear: function () {
             balloonLayout.superclass.clear.call(this);
+
+            addReview.removeEventListener('click', onAddReviewClick);
+            closeButton.removeEventListener('click', () => {
+                this.closeBalloon();
+            });
         },
         closeBalloon: function () {
             this.events.fire('userclose');
@@ -109,7 +95,7 @@ export function loadMap() {
 
     myMap.geoObjects.add(clusterer);
 
-    if (basicStorage.items.length) {
+    if (basicStorage.length) {
         getPlacemarks();
     }
 
@@ -117,16 +103,40 @@ export function loadMap() {
         const coords = e.get('coords');
 
         ymaps.geocode(coords).then(function (res) {
-            var newContent = res.geoObjects.get(0) ?
-                res.geoObjects.get(0).properties.get('name') :
-                'Не удалось определить адрес.';
-                
-            myMap.balloon.open(coords, {
-                properties: {
-                    address: newContent,
-                    coords: coords
-                }
-            });
+
+            try {
+                let newContent = `${res.geoObjects.get(0).properties.get('description')}, ${res.geoObjects.get(0).properties.get('name')}`;
+
+                myMap.balloon.open(coords, {
+                    properties: {
+                        address: newContent,
+                        coords: coords
+                    }
+                }); 
+            } catch (e) {
+                alert('Не удалось определить адрес.');
+            }
         });
     });
+}
+
+function onAddReviewClick(e) {
+    e.preventDefault();
+            
+    let data = myMap.balloon.getData().properties;
+    let address, coords;
+
+    // Проверка на то, существует ли уже объект от яндекса
+
+    data.address ? address = data.address : address = data._data.address;
+    data.coords ? coords = data.coords : coords = data._data.point.reverse();
+
+    let point = {
+        properties: {
+            address: address,
+            coords: coords
+        }
+    }; 
+
+    createReview(point);
 }
