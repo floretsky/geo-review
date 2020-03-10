@@ -106,17 +106,13 @@ __webpack_require__(/*! @fortawesome/fontawesome-free/css/all.min.css */ "./node
 
 
 
-var basicStorage = {
-  items: []
-};
+var basicStorage = [];
 
 if (localStorage.data) {
   basicStorage = JSON.parse(localStorage.data);
 }
 
-var placemarksCoords = {
-  items: []
-};
+var placemarksCoords = [];
 ymaps.ready(function () {
   Object(_js_map__WEBPACK_IMPORTED_MODULE_1__["loadMap"])();
   Object(_js_navigate__WEBPACK_IMPORTED_MODULE_2__["navigateFromCarousel"])();
@@ -148,37 +144,30 @@ __webpack_require__.r(__webpack_exports__);
 var clusterer;
 var myMap;
 function loadMap() {
+  var addReview, closeButton;
   var balloonLayout = ymaps.templateLayoutFactory.createClass(_templates_popup_hbs__WEBPACK_IMPORTED_MODULE_3___default()(), {
     build: function build() {
       var _this = this;
 
       balloonLayout.superclass.build.call(this);
-      var popupBlock = document.querySelector('.popup'),
-          closeButton = popupBlock.querySelector('.popup__close'),
-          addReview = popupBlock.querySelector('.add-review');
+      var popupBlock = document.querySelector('.popup');
+      addReview = popupBlock.querySelector('.add-review');
+      closeButton = popupBlock.querySelector('.popup__close');
       this._element = this.getParentElement().querySelector('.popup');
       this.applyElementOffset();
+      addReview.addEventListener('click', onAddReviewClick);
       closeButton.addEventListener('click', function () {
         _this.closeBalloon();
       });
-      addReview.addEventListener('click', function (e) {
-        e.preventDefault();
-        var data = myMap.balloon.getData().properties;
-        var address, coords; // Проверка на то, существует ли уже объект от яндекса
-
-        data.address ? address = data.address : address = data._data.address;
-        data.coords ? coords = data.coords : coords = data._data.point.reverse();
-        var point = {
-          properties: {
-            address: address,
-            coords: coords
-          }
-        };
-        Object(_review__WEBPACK_IMPORTED_MODULE_1__["createReview"])(point);
-      });
     },
     clear: function clear() {
+      var _this2 = this;
+
       balloonLayout.superclass.clear.call(this);
+      addReview.removeEventListener('click', onAddReviewClick);
+      closeButton.removeEventListener('click', function () {
+        _this2.closeBalloon();
+      });
     },
     closeBalloon: function closeBalloon() {
       this.events.fire('userclose');
@@ -230,22 +219,42 @@ function loadMap() {
   });
   myMap.geoObjects.add(clusterer);
 
-  if (___WEBPACK_IMPORTED_MODULE_0__["basicStorage"].items.length) {
+  if (___WEBPACK_IMPORTED_MODULE_0__["basicStorage"].length) {
     Object(_placemark__WEBPACK_IMPORTED_MODULE_2__["getPlacemarks"])();
   }
 
   myMap.events.add('click', function (e) {
     var coords = e.get('coords');
     ymaps.geocode(coords).then(function (res) {
-      var newContent = res.geoObjects.get(0) ? res.geoObjects.get(0).properties.get('name') : 'Не удалось определить адрес.';
-      myMap.balloon.open(coords, {
-        properties: {
-          address: newContent,
-          coords: coords
-        }
-      });
+      try {
+        var newContent = "".concat(res.geoObjects.get(0).properties.get('description'), ", ").concat(res.geoObjects.get(0).properties.get('name'));
+        myMap.balloon.open(coords, {
+          properties: {
+            address: newContent,
+            coords: coords
+          }
+        });
+      } catch (e) {
+        alert('Не удалось определить адрес.');
+      }
     });
   });
+}
+
+function onAddReviewClick(e) {
+  e.preventDefault();
+  var data = myMap.balloon.getData().properties;
+  var address, coords; // Проверка на то, существует ли уже объект от яндекса
+
+  data.address ? address = data.address : address = data._data.address;
+  data.coords ? coords = data.coords : coords = data._data.point.reverse();
+  var point = {
+    properties: {
+      address: address,
+      coords: coords
+    }
+  };
+  Object(_review__WEBPACK_IMPORTED_MODULE_1__["createReview"])(point);
 }
 
 /***/ }),
@@ -278,13 +287,13 @@ function navigateFromCarousel() {
       myReverseGeocoder.then(function (res) {
         var nearest = res.geoObjects.get(0);
         var reviewsArr = [];
-        var address = nearest.properties.get('name');
+        var address = "".concat(nearest.properties.get('description'), ", ").concat(nearest.properties.get('name'));
         var _iteratorNormalCompletion = true;
         var _didIteratorError = false;
         var _iteratorError = undefined;
 
         try {
-          for (var _iterator = ___WEBPACK_IMPORTED_MODULE_1__["basicStorage"].items[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          for (var _iterator = ___WEBPACK_IMPORTED_MODULE_1__["basicStorage"][Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
             var item = _step.value;
 
             if (item.properties.address === address) {
@@ -352,7 +361,7 @@ function getPlacemarks() {
   var _iteratorError = undefined;
 
   try {
-    for (var _iterator = ___WEBPACK_IMPORTED_MODULE_0__["basicStorage"].items[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+    for (var _iterator = ___WEBPACK_IMPORTED_MODULE_0__["basicStorage"][Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
       var item = _step.value;
       var _iteratorNormalCompletion2 = true;
       var _didIteratorError2 = false;
@@ -361,7 +370,7 @@ function getPlacemarks() {
       try {
         for (var _iterator2 = item.reviews[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
           var review = _step2.value;
-          ___WEBPACK_IMPORTED_MODULE_0__["placemarksCoords"].items.push(item.properties.coords);
+          ___WEBPACK_IMPORTED_MODULE_0__["placemarksCoords"].push(item.properties.coords);
           var placemark = addPlacemark(item, review);
 
           if (placemark) {
@@ -399,8 +408,8 @@ function getPlacemarks() {
   }
 }
 function addPlacemark(point, newReview) {
-  if (___WEBPACK_IMPORTED_MODULE_0__["placemarksCoords"].items.length) {
-    var placemark = new ymaps.Placemark(___WEBPACK_IMPORTED_MODULE_0__["placemarksCoords"].items[___WEBPACK_IMPORTED_MODULE_0__["placemarksCoords"].items.length - 1], {
+  if (___WEBPACK_IMPORTED_MODULE_0__["placemarksCoords"].length) {
+    var placemark = new ymaps.Placemark(___WEBPACK_IMPORTED_MODULE_0__["placemarksCoords"][___WEBPACK_IMPORTED_MODULE_0__["placemarksCoords"].length - 1], {
       balloonContentHeader: newReview.place,
       balloonContentLink: point.properties.address,
       balloonContentReviewName: newReview.name,
@@ -462,13 +471,13 @@ function createReview(point) {
   if (name.value && review.value && place.value) {
     var flag = false;
 
-    if (___WEBPACK_IMPORTED_MODULE_0__["basicStorage"].items.length) {
+    if (___WEBPACK_IMPORTED_MODULE_0__["basicStorage"].length) {
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
 
       try {
-        for (var _iterator = ___WEBPACK_IMPORTED_MODULE_0__["basicStorage"].items[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        for (var _iterator = ___WEBPACK_IMPORTED_MODULE_0__["basicStorage"][Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           var item = _step.value;
 
           if (item.properties.address == point.properties.address) {
@@ -497,13 +506,13 @@ function createReview(point) {
     if (flag == false) {
       point.reviews = [];
       point.reviews.push(newReview);
-      ___WEBPACK_IMPORTED_MODULE_0__["basicStorage"].items.push(point);
+      ___WEBPACK_IMPORTED_MODULE_0__["basicStorage"].push(point);
     }
   } else {
     alert('Заполните все поля, чтобы добавить отзыв');
   }
 
-  ___WEBPACK_IMPORTED_MODULE_0__["placemarksCoords"].items.push(point.properties.coords);
+  ___WEBPACK_IMPORTED_MODULE_0__["placemarksCoords"].push(point.properties.coords);
   var placemark = Object(_placemark_js__WEBPACK_IMPORTED_MODULE_2__["addPlacemark"])(point, newReview);
 
   if (placemark) {
@@ -520,9 +529,7 @@ function createReview(point) {
     });
   }
 
-  localStorage.data = JSON.stringify({
-    items: ___WEBPACK_IMPORTED_MODULE_0__["basicStorage"].items
-  });
+  localStorage.data = JSON.stringify(___WEBPACK_IMPORTED_MODULE_0__["basicStorage"]);
 }
 
 /***/ }),
@@ -2273,4 +2280,4 @@ module.exports = g;
 /***/ })
 
 /******/ });
-//# sourceMappingURL=index.93828d3f49c544d7d6d0.js.map
+//# sourceMappingURL=index.964cea3171c58a156737.js.map
