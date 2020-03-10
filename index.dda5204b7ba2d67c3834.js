@@ -199,7 +199,7 @@ function loadMap() {
     balloonLayout: balloonLayout
   });
   var customItemContentLayout = ymaps.templateLayoutFactory.createClass( // Флаг "raw" означает, что данные вставляют "как есть" без экранирования html.
-  "<div class=ballon__content>\n            <h2 class=ballon__header>{{ properties.balloonContentHeader|raw }}</h2>\n            <div class=ballon__body>\n            <a href=\"#\" class=ballon__link data-coord=\"{{ properties.balloonContentCoords|raw }}\">{{ properties.balloonContentLink|raw }}</a>\n            <div class=ballon__review>\n                <b>{{ properties.balloonContentReviewName|raw }}:</b> {{ properties.balloonContentReview|raw }}\n            </div>\n            <div class=ballon__footer>{{ properties.balloonContentFooter|raw }}</div>\n            </div>\n        </div>");
+  "<div class=ballon__content>\n            <h2 class=ballon__header>{{ properties.balloonContentHeader|raw }}</h2>\n            <div class=ballon__body>\n            <a href=\"#\" class=ballon__link data-coord=\"{{ properties.balloonContentCoords|raw }}\" data-address=\"{{ properties.balloonContentLink|raw }}\">{{ properties.balloonContentLink|raw }}</a>\n            <div class=ballon__review>\n                <b>{{ properties.balloonContentReviewName|raw }}:</b> {{ properties.balloonContentReview|raw }}\n            </div>\n            <div class=ballon__footer>{{ properties.balloonContentFooter|raw }}</div>\n            </div>\n        </div>");
   clusterer = new ymaps.Clusterer({
     preset: 'islands#invertedVioletClusterIcons',
     // стили кластера
@@ -284,10 +284,9 @@ function navigateFromCarousel() {
       e.preventDefault;
       var coords = elem.dataset.coord.split(',');
       var myReverseGeocoder = ymaps.geocode(coords);
-      myReverseGeocoder.then(function (res) {
-        var nearest = res.geoObjects.get(0);
+      myReverseGeocoder.then(function () {
         var reviewsArr = [];
-        var address = "".concat(nearest.properties.get('description'), ", ").concat(nearest.properties.get('name'));
+        var address = elem.dataset.address;
         var _iteratorNormalCompletion = true;
         var _didIteratorError = false;
         var _iteratorError = undefined;
@@ -296,7 +295,7 @@ function navigateFromCarousel() {
           for (var _iterator = ___WEBPACK_IMPORTED_MODULE_1__["basicStorage"][Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
             var item = _step.value;
 
-            if (item.properties.address === address) {
+            if (address === item.properties.address) {
               reviewsArr.push.apply(reviewsArr, _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_0___default()(item.reviews));
             }
           }
@@ -2280,4 +2279,4 @@ module.exports = g;
 /***/ })
 
 /******/ });
-//# sourceMappingURL=index.964cea3171c58a156737.js.map
+//# sourceMappingURL=index.dda5204b7ba2d67c3834.js.map
